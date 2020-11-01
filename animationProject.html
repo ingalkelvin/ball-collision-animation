@@ -1,0 +1,182 @@
+<!doctype  html>
+	<head>
+		<title>
+			Bouncing Ball
+		</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+
+	<body>
+		<center>
+			<canvas id="canvas" width="600" height="600"></canvas>
+			<br>
+			<textarea id="logScore"></textarea>
+			<textarea id="logLife"></textarea>
+			<br>
+			<input type="button" value ="Information"; onclick="informationFunc()">
+
+			<input type="button" value ="Play Again"; onclick="playFunc()">
+
+		</center>
+
+		<script src="utils.js"></script>
+		<script src="ball.js"></script>
+		<script src="bar.js"></script>
+
+		<script type="text/javascript">
+
+		function informationFunc() {
+
+			alert("erere");
+		}
+
+		var playAgain = false;
+		function playFunc() {
+			playAgain = true;
+		}
+
+			window.onload = function() {
+
+				var canvas = document.getElementById("canvas");
+				var context = canvas.getContext('2d');
+				var ball;
+				var bar = new Bar("green");
+
+				var arrayBall = [];
+				var numArray = 10;
+				var randColor = ["red", "yellow","red"];
+				var score = 0, life = 5;
+
+				var left = 0;
+				var top = 0;
+				var right = canvas.width;
+				var bottom = canvas.height;
+
+				var vxBar = 0; 
+
+				bar.x = canvas.width/2;
+				bar.y = canvas.height - 20;
+				
+				function createBall() {
+					for(var i = 0 ; i<numArray; i++) {
+
+						ball = new Ball(20, randColor[Math.round(Math.random()*2)]);
+						ball.id = "ball"+i;
+	            		var tempX = canvas.width-ball.radius*3;
+						var newValueX = Math.round(Math.random()*tempX - (-ball.radius));
+
+						ball.x = newValueX;
+						ball.y = Math.random()*-100 - 200;
+						ball.vy = Math.random()*2 - (-1);
+						arrayBall.push(ball);
+
+					}
+				}
+				
+				createBall();
+
+				window.addEventListener('keydown',function(event){
+					switch(event.keyCode) {
+						case 37: 
+							vxBar = -5;
+						break;
+						case 39:
+								vxBar = 5;
+						break;
+					}
+				},false);
+
+				window.addEventListener('keyup',function(){
+					vxBar = 0;
+				},false);
+
+				function resetPosition(ball) {
+
+					ball.y = Math.random()*-100 - 200;
+					ball.color = randColor[Math.round(Math.random()*2)];
+					var tempX = canvas.width-ball.radius*3;
+					var newValueX = Math.round(Math.random()*tempX - (-ball.radius));
+					ball.x = newValueX;
+				}
+
+				function draw(ball) {
+
+					if(life > 0)
+					{
+						ball.y += ball.vy;
+
+						if(utils.intersects(ball.getBounds(),bar.getBounds()) && ball.color == "red") {
+							
+							score++;
+							resetPosition(ball);
+						}
+						else if(utils.intersects(ball.getBounds(),bar.getBounds()) && ball.color == "yellow") {
+							
+							life--;
+							resetPosition(ball); 
+						}
+						else if(ball.y-ball.radius >= bottom && ball.color == "red") {
+							
+							life--;
+							resetPosition(ball);
+						}
+						else if(ball.y-ball.radius >= bottom) { 
+							resetPosition(ball);
+						}
+					}
+					else {
+						life = "Game Over!";
+					}
+
+					ball.draw(context);
+				}
+
+				(function drawFrame() {
+
+					window.requestAnimationFrame(drawFrame, canvas);
+					context.clearRect(0,0,canvas.width, canvas.height);
+
+					if(bar.x > 70) 
+						bar.x += vxBar;
+					else {
+						bar.x = 70;
+					}
+
+					if(bar.x < canvas.width-70) 
+						bar.x += vxBar;
+					else {
+						bar.x = canvas.width-70;
+					}
+
+
+					logScore.value = "Score: "+score;
+					logLife.value = "Life: "+life;
+					arrayBall.forEach(draw);
+					bar.draw(context);
+					
+
+					if(playAgain) {
+
+						score = 0;
+						life = 5;
+						bar.x = canvas.width/2;
+						bar.y = canvas.height - 20;
+
+						arrayBall.splice(0,numArray);
+
+						createBall();
+
+						playAgain = false;
+					}
+
+				}());
+
+			};
+
+		</script>
+
+	</body>
+
+
+</html>
