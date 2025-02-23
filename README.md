@@ -8,13 +8,4 @@ Player must catch all the red ball and avoid yellow one
 
 # website 
 
-https://testingkels.000webhostapp.com/
-
-
-# paypal
-
-paypal.me/kelvin.ynggal@gmail.com
-
-# BTC
-
-3LKLWWts1yTwPNYELkg1dokPpLkLnToDkF
+https://kelvin-ingal-dev-ed.my.site.com/
